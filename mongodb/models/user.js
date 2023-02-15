@@ -7,6 +7,6 @@ const UserSchema = new mongoose.Schema({
   allProperties: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }],
 });
 
-const userModel = mongoose.model('User', UserSchema);
+const userModel = mongoose.model('user', UserSchema);
 
 export default userModel;
