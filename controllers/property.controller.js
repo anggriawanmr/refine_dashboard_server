@@ -1,8 +1,9 @@
-import propertyModel from '../mongodb/models/property.js';
+import Property from '../mongodb/models/property.js';
 import user from '../mongodb/models/user.js';
 
 import * as dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
