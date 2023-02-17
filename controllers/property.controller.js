@@ -1,5 +1,5 @@
 import Property from '../mongodb/models/property.js';
-import user from '../mongodb/models/user.js';
+import User from '../mongodb/models/user.js';
 
 import * as dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
@@ -72,9 +72,9 @@ const createProperty = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
-    const User = await user.findOne({ email }).session(session);
+    const user = await User.findOne({ email }).session(session);
 
-    if (!User) throw new Error('User not found');
+    if (!user) throw new Error('User not found');
 
     const photoUrl = await cloudinary.uploader.upload(photo);
 
@@ -85,12 +85,12 @@ const createProperty = async (req, res) => {
       location,
       price,
       photo: photoUrl.url,
-      creator: User.id,
+      creator: user.id,
     });
 
-    User.allProperties.push(newProperty._id);
+    user.allProperties.push(newProperty._id);
 
-    await User.save({ session });
+    await user.save({ session });
 
     await session.commitTransaction();
 
@@ -106,9 +106,9 @@ const deleteProperty = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const propertyToDelete = await Property.findById({
-      _id: id,
-    }).populate('creator');
+    const propertyToDelete = await Property.findById({ _id: id }).populate(
+      'creator'
+    );
 
     if (!propertyToDelete) throw new Error('Property not found');
 
