@@ -1,9 +1,9 @@
 import Property from '../mongodb/models/property.js';
 import User from '../mongodb/models/user.js';
 
+import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
-import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -59,7 +59,7 @@ const getPropertyDetail = async (req, res) => {
   if (propertyExists) {
     res.status(200).json(propertyExists);
   } else {
-    res.status(404).json({ message: 'Property Not Found' });
+    res.status(404).json({ message: 'Property not found' });
   }
 };
 
@@ -68,7 +68,6 @@ const createProperty = async (req, res) => {
     const { title, description, propertyType, location, price, photo, email } =
       req.body;
 
-    // Start a new session...
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -85,11 +84,10 @@ const createProperty = async (req, res) => {
       location,
       price,
       photo: photoUrl.url,
-      creator: user.id,
+      creator: user._id,
     });
 
     user.allProperties.push(newProperty._id);
-
     await user.save({ session });
 
     await session.commitTransaction();
@@ -120,7 +118,7 @@ const updateProperty = async (req, res) => {
       }
     );
 
-    res.status(200).json({ message: 'Property updated' });
+    res.status(200).json({ message: 'Property updated successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
